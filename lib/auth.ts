@@ -19,6 +19,6 @@ export async function requerUtilizador() {
 export async function requerMentora() {
   const user = await requerUtilizador();
   const emailMentora = process.env.NEXT_PUBLIC_MENTORA_EMAIL ?? PLATAFORMA.mentora.email;
-  if (user.email !== emailMentora) redirect("/jornada");
+  if (user.email !== emailMentora) redirect("/dashboard");
   return user;
 }

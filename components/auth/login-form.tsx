@@ -27,7 +27,7 @@ export function LoginForm() {
       return;
     }
 
-    router.push("/jornada");
+    router.push("/dashboard");
     router.refresh();
   }
 
