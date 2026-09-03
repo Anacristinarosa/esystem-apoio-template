@@ -81,9 +81,10 @@ export default async function FerramentasPage({ searchParams }: Props) {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {ferramentas.map((f) => (
-                <div
+                <Link
                   key={f.id}
-                  className="rounded-2xl bg-cream-50 gold-border-rich gold-shadow p-6"
+                  href={`/ferramentas/${f.id}`}
+                  className="block rounded-2xl bg-cream-50 gold-border-rich gold-shadow p-6 hover:bg-gold-50/40 transition-all"
                 >
                   {f.categoria && (
                     <p className="text-[10px] tracking-[0.3em] uppercase text-gold-600 mb-2">
@@ -94,7 +95,7 @@ export default async function FerramentasPage({ searchParams }: Props) {
                     {f.titulo}
                   </h3>
                   {f.descricao && (
-                    <p className="text-sm text-ink-soft leading-relaxed mb-4 whitespace-pre-wrap">
+                    <p className="text-sm text-ink-soft leading-relaxed mb-4 whitespace-pre-wrap line-clamp-3">
                       {f.descricao}
                     </p>
                   )}
@@ -107,17 +108,12 @@ export default async function FerramentasPage({ searchParams }: Props) {
                       <span />
                     )}
                     {f.material_url && (
-                      <a
-                        href={f.material_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs text-gold-700 hover:text-gold-600 font-medium"
-                      >
-                        Abrir <ExternalLink className="w-3 h-3" />
-                      </a>
+                      <span className="inline-flex items-center gap-1.5 text-xs text-gold-700 font-medium">
+                        <ExternalLink className="w-3 h-3" /> material
+                      </span>
                     )}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
