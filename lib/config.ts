@@ -28,8 +28,6 @@ export const PLATAFORMA = {
     email: "tu@teudominio.pt",
   },
 
-  /** Password inicial que dás aos utilizadores para o primeiro login. */
-  passwordInicial: "muda-me-2026",
 
   /**
    * As 4 peças possíveis desta plataforma. Ativa só as que fazem sentido para

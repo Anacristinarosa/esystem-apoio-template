@@ -20,6 +20,7 @@ create index if not exists idx_mensagens_data on public.mensagens_dia(data);
 
 alter table public.mensagens_dia enable row level security;
 
+drop policy if exists "Utilizadores autenticados leem mensagens publicadas" on public.mensagens_dia;
 create policy "Utilizadores autenticados leem mensagens publicadas"
   on public.mensagens_dia for select
   using (auth.role() = 'authenticated' and publicada = true);
@@ -41,6 +42,7 @@ create index if not exists idx_ferramentas_categoria on public.ferramentas(categ
 
 alter table public.ferramentas enable row level security;
 
+drop policy if exists "Utilizadores autenticados leem ferramentas publicadas" on public.ferramentas;
 create policy "Utilizadores autenticados leem ferramentas publicadas"
   on public.ferramentas for select
   using (auth.role() = 'authenticated' and publicada = true);
@@ -71,23 +73,28 @@ create index if not exists idx_preenchidos_utilizador on public.templates_preenc
 alter table public.templates enable row level security;
 alter table public.templates_preenchidos enable row level security;
 
+drop policy if exists "Utilizadores autenticados leem templates publicados" on public.templates;
 create policy "Utilizadores autenticados leem templates publicados"
   on public.templates for select
   using (auth.role() = 'authenticated' and publicado = true);
 
+drop policy if exists "Cada utilizador vê os próprios preenchidos" on public.templates_preenchidos;
 create policy "Cada utilizador vê os próprios preenchidos"
   on public.templates_preenchidos for select
   using (auth.uid() = utilizador_id);
 
+drop policy if exists "Cada utilizador cria os próprios preenchidos" on public.templates_preenchidos;
 create policy "Cada utilizador cria os próprios preenchidos"
   on public.templates_preenchidos for insert
   with check (auth.uid() = utilizador_id);
 
+drop policy if exists "Cada utilizador atualiza os próprios preenchidos" on public.templates_preenchidos;
 create policy "Cada utilizador atualiza os próprios preenchidos"
   on public.templates_preenchidos for update
   using (auth.uid() = utilizador_id)
   with check (auth.uid() = utilizador_id);
 
+drop policy if exists "Cada utilizador apaga os próprios preenchidos" on public.templates_preenchidos;
 create policy "Cada utilizador apaga os próprios preenchidos"
   on public.templates_preenchidos for delete
   using (auth.uid() = utilizador_id);
@@ -110,19 +117,23 @@ create index if not exists idx_casos_tags on public.casos using gin(tags);
 
 alter table public.casos enable row level security;
 
+drop policy if exists "Cada utilizador vê os próprios casos" on public.casos;
 create policy "Cada utilizador vê os próprios casos"
   on public.casos for select
   using (auth.uid() = utilizador_id);
 
+drop policy if exists "Cada utilizador cria os próprios casos" on public.casos;
 create policy "Cada utilizador cria os próprios casos"
   on public.casos for insert
   with check (auth.uid() = utilizador_id);
 
+drop policy if exists "Cada utilizador atualiza os próprios casos" on public.casos;
 create policy "Cada utilizador atualiza os próprios casos"
   on public.casos for update
   using (auth.uid() = utilizador_id)
   with check (auth.uid() = utilizador_id);
 
+drop policy if exists "Cada utilizador apaga os próprios casos" on public.casos;
 create policy "Cada utilizador apaga os próprios casos"
   on public.casos for delete
   using (auth.uid() = utilizador_id);
@@ -150,3 +161,8 @@ grant all on all routines in schema public to anon, authenticated, service_role;
 alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
 alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
 alter default privileges in schema public grant all on routines to anon, authenticated, service_role;
+
+-- Segurança: a lista de contas (com emails) não pode ser lida com a chave pública
+-- nem por outras utilizadoras: só a chave de servidor, que a app usa depois de exigir a mentora.
+revoke all on public.utilizadores_view from anon, authenticated;
+grant select on public.utilizadores_view to service_role;

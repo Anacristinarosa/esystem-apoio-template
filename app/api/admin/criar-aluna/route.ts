@@ -1,7 +1,7 @@
+import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { requerMentora } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { PLATAFORMA } from "@/lib/config";
 
 export async function POST(req: Request) {
   await requerMentora();
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ erro: "Email obrigatório." }, { status: 400 });
   }
 
-  const password = process.env.PASSWORD_INICIAL ?? PLATAFORMA.passwordInicial;
+  const password = process.env.PASSWORD_INICIAL ?? randomBytes(9).toString("base64url");
   const admin = createAdminClient();
 
   const { data, error } = await admin.auth.admin.createUser({
